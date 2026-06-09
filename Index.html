@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Umoja Connect</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0d0d0f;
+    --surface: #16161a;
+    --surface2: #1e1e24;
+    --border: #2a2a32;
+    --gold: #c9a84c;
+    --gold-soft: #e8c97a;
+    --rose: #c46a7a;
+    --text: #e8e8ec;
+    --muted: #7a7a8a;
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* SCREENS */
+  .screen { display: none; min-height: 100vh; flex-direction: column; }
+  .screen.active { display: flex; }
+
+  /* LANDING */
+  #landing {
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    text-align: center;
+    background: radial-gradient(ellipse at 50% 0%, #1a1020 0%, var(--bg) 70%);
+  }
+
+  .logo-mark {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 24px;
+    position: relative;
+  }
+
+  .logo-mark svg { width: 100%; height: 100%; }
+
+  .brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--gold-soft), var(--rose));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .brand-tagline {
+    color: var(--muted);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+
+  .mode-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    max-width: 360px;
+    margin-bottom: 32px;
+  }
+
+  .mode-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s, transform 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mode-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .mode-card.singles::before { background: linear-gradient(90deg, var(--gold), var(--gold-soft)); }
+  .mode-card.couples::before { background: linear-gradient(90deg, var(--rose), #e8a0b0); }
+
+  .mode-card:hover { transform: translateY(-2px); border-color: #3a3a45; }
+  .mode-card:hover::before { opacity: 1; }
+
+  .mode-icon { font-size: 1.6rem; margin-bottom: 10px; }
+  .mode-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+    color: #fff;
+  }
+  .mode-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+  .privacy-note {
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* SINGLES MODE */
+  #singles {
+    flex-direction: column;
+  }
+
+  .app-header {
+    padding: 20px 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .back-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--gold-soft);
+  }
+
+  .spacer { width: 28px; }
+
+  .singles-content {
+    flex: 1;
+    padding: 24px 20px;
+    overflow-y: auto;
+  }
+
+  .affirmation-card {
+    background: linear-gradient(135deg, #1a1520, #1e1525);
+    border: 1px solid #2e2035;
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .affirmation-card::after {
+    content: '✦';
+    position: absolute;
+    top: 16px; right: 20px;
+    color: var(--gold);
+    opacity: 0.4;
+    font-size: 1.2rem;
+  }
+
+  .affirmation-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .affirmation-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: #d8d0e8;
+    line-height: 1.6;
+  }
+
+  .prompt-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .prompt-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .prompt-text {
+    font-size: 0.95rem;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .advisor-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .advisor-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .situation-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    resize: none;
+    min-height: 90px;
+    margin-bottom: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .situation-input:focus { border-color: var(--gold); }
+  .situation-input::placeholder { color: var(--muted); }
+
+  .mode-options {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .mode-opt {
+    flex: 1;
+    min-width: 80px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 8px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .mode-opt.selected {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: #1a1608;
+  }
+
+  .mode-opt-icon { font-size: 1.1rem; display: block; margin-bottom: 4px; }
+
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), #a8882a);
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    color: #0d0d0f;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-secondary {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+
+  .response-card {
+    background: linear-gradient(135deg, #0f1a0f, #141f14);
+    border: 1px solid #1e3020;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 16px;
+    display: none;
+  }
+
+  .response-card.visible { display: block; }
+
+  .response-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #6a9a6a;
+    margin-bottom: 12px;
+  }
+
+  .response-text {
+    font-size: 0.9rem;
+    color: #c8dcc8;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+
+  .feedback-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .feedback-btn {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .feedback-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* COUPLES MODE */
+  #couples { flex-direction: column; }
+
+  .couples-content {
+    flex: 1;
+    padding: 24px 20px;
+    overflow-y: auto;
+  }
+
+  .room-setup {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .room-info {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+
+  .room-info-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: var(--rose);
+  }
+
+  .room-info-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .input-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .input-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+  }
+
+  .text-input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  .text-input:focus { border-color: var(--rose); }
+  .text-input::placeholder { color: var(--muted); }
+
+  .btn-rose {
+    width: 100%;
+    background: linear-gradient(135deg, var(--rose), #a0404f);
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn-rose:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* COUPLES ROOM */
+  .room-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .room-code-badge {
+    font-size: 0.7rem;
+    background: #1a0a10;
+    border: 1px solid #3a1020;
+    color: var(--rose);
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+
+  .partners-row {
+    display: flex;
+    gap: 8px;
+    padding: 16px 20px;
+  }
+
+  .partner-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .partner-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #4a9a4a;
+  }
+
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .tab.active { color: var(--rose); border-bottom-color: var(--rose); }
+
+  .tab-content { display: none; padding: 20px; flex: 1; overflow-y: auto; }
+  .tab-content.active { display: block; }
+
+  .question-card {
+    background: linear-gradient(135deg, #1a0a12, #1e0e16);
+    border: 1px solid #3a1525;
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .question-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--rose);
+    margin-bottom: 12px;
+  }
+
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: #e8d0d8;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .answer-area {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    resize: none;
+    min-height: 80px;
+    outline: none;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+    text-align: left;
+  }
+
+  .answer-area:focus { border-color: var(--rose); }
+
+  .saved-answers {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .saved-answer {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+
+  .saved-answer:last-child { border-bottom: none; }
+  .answer-author { font-size: 0.7rem; color: var(--rose); margin-bottom: 4px; }
+  .answer-body { color: var(--text); line-height: 1.5; }
+
+  .game-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.1s;
+  }
+
+  .game-card:hover { border-color: var(--rose); transform: translateX(3px); }
+  .game-title { font-weight: 500; margin-bottom: 4px; }
+  .game-desc { font-size: 0.78rem; color: var(--muted); }
+
+  .game-active {
+    background: linear-gradient(135deg, #1a0a12, #1e0e16);
+    border: 1px solid #3a1525;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .loading-dots {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .loading-dots span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: bounce 1.2s infinite;
+  }
+
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 0.82rem;
+    color: var(--text);
+    transition: transform 0.3s;
+    z-index: 100;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing" class="screen active">
+  <div class="logo-mark">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="22" cy="32" r="14" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+      <circle cx="42" cy="32" r="14" stroke="#c46a7a" stroke-width="1.5" fill="none"/>
+      <path d="M32 20 Q36 32 32 44 Q28 32 32 20Z" fill="url(#grad)" opacity="0.6"/>
+      <defs>
+        <linearGradient id="grad" x1="32" y1="20" x2="32" y2="44">
+          <stop offset="0%" stop-color="#c9a84c"/>
+          <stop offset="100%" stop-color="#c46a7a"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="brand-name">Umoja Connect</div>
+  <div class="brand-tagline">Grow together · Privately</div>
+
+  <div class="mode-cards">
+    <div class="mode-card singles" onclick="goSingles()">
+      <div class="mode-icon">🌱</div>
+      <div class="mode-title">Singles Mode</div>
+      <div class="mode-desc">Build confidence, reflect on your feelings, and prepare for meaningful connections.</div>
+    </div>
+    <div class="mode-card couples" onclick="goCouples()">
+      <div class="mode-icon">🔗</div>
+      <div class="mode-title">Couples Mode</div>
+      <div class="mode-desc">Share a room with your partner. Answer questions, play bonding games, get guidance together.</div>
+    </div>
+  </div>
+
+  <div class="privacy-note">
+    <span>🔒</span>
+    <span>No accounts. No data stored on servers. Private by design.</span>
+  </div>
+</div>
+
+<!-- SINGLES MODE -->
+<div id="singles" class="screen">
+  <div class="app-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="header-title">Singles Mode</span>
+    <div class="spacer"></div>
+  </div>
+
+  <div class="singles-content">
+    <div class="affirmation-card">
+      <div class="affirmation-label">Today's Affirmation</div>
+      <div class="affirmation-text" id="daily-affirmation">Loading your affirmation...</div>
+    </div>
+
+    <div class="prompt-card">
+      <div class="prompt-label">Confidence Prompt</div>
+      <div class="prompt-text" id="daily-prompt">Loading today's prompt...</div>
+      <button class="btn-secondary" onclick="refreshPrompt()" style="margin-top:0">New prompt →</button>
+    </div>
+
+    <div class="advisor-section">
+      <div class="advisor-label">Umoja Advisor</div>
+      <textarea class="situation-input" id="situation-input" placeholder="Share what's on your mind — a situation, a feeling, a question about your relationship journey..."></textarea>
+
+      <div class="mode-options">
+        <div class="mode-opt selected" data-mode="reflective" onclick="selectMode(this)">
+          <span class="mode-opt-icon">🪞</span>
+          Reflective
+        </div>
+        <div class="mode-opt" data-mode="strategy" onclick="selectMode(this)">
+          <span class="mode-opt-icon">🎯</span>
+          Strategy
+        </div>
+        <div class="mode-opt" data-mode="game" onclick="selectMode(this)">
+          <span class="mode-opt-icon">🎮</span>
+          Activity
+        </div>
+      </div>
+
+      <button class="btn-primary" id="singles-ask-btn" onclick="askAdvisor()">Ask Umoja</button>
+
+      <div class="response-card" id="singles-response">
+        <div class="response-label">Umoja's Response</div>
+        <div class="response-text" id="singles-response-text"></div>
+        <div class="feedback-row">
+          <button class="feedback-btn" onclick="markEffective()">✓ This helped</button>
+          <button class="feedback-btn" onclick="askAgain()">↺ Ask differently</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COUPLES SETUP -->
+<div id="couples" class="screen">
+  <div class="app-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <span class="header-title" style="color: var(--rose);">Couples Mode</span>
+    <div class="spacer"></div>
+  </div>
+
+  <div class="couples-content">
+    <div class="room-setup">
+      <div class="room-info">
+        <div class="room-info-title">Share a Room</div>
+        <div class="room-info-desc">Create a room and share the code with your partner. You both enter the same code to connect. Your conversations stay on your devices only.</div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label">Your name</div>
+        <input type="text" class="text-input" id="partner-name" placeholder="Enter your name" maxlength="20">
+      </div>
+
+      <div class="input-group">
+        <div class="input-label">Room code</div>
+        <input type="text" class="text-input" id="room-code-input" placeholder="Enter or create a code (e.g. ROSE24)" maxlength="10" style="text-transform:uppercase">
+      </div>
+
+      <button class="btn-rose" onclick="joinRoom()">Enter Room</button>
+      <button class="btn-secondary" onclick="generateCode()">Generate random code</button>
+    </div>
+  </div>
+</div>
+
+<!-- COUPLES ROOM -->
+<div id="room" class="screen">
+  <div class="room-header">
+    <button class="back-btn" onclick="leaveRoom()">←</button>
+    <div class="room-code-badge" id="room-code-display">ROOM</div>
+    <button class="back-btn" onclick="copyRoomCode()" style="font-size:0.9rem">📋</button>
+  </div>
+
+  <div class="partners-row" id="partners-row"></div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('questions', this)">Questions</div>
+    <div class="tab" onclick="switchTab('games', this)">Games</div>
+    <div class="tab" onclick="switchTab('advisor', this)">Advisor</div>
+  </div>
+
+  <div class="tab-content active" id="tab-questions">
+    <div class="question-card">
+      <div class="question-label">Question of the Day</div>
+      <div class="question-text" id="couple-question">Loading your question...</div>
+      <button class="btn-rose" onclick="newQuestion()" style="font-size:0.8rem;padding:10px">New question</button>
+    </div>
+
+    <div class="saved-answers" id="answers-container">
+      <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:10px">Answers</div>
+      <div id="answers-list" style="color:var(--muted);font-size:0.85rem">No answers yet. Be the first to share.</div>
+    </div>
+
+    <textarea class="answer-area" id="answer-input" placeholder="Your answer..."></textarea>
+    <button class="btn-rose" onclick="saveAnswer()">Share answer</button>
+  </div>
+
+  <div class="tab-content" id="tab-games">
+    <div id="games-list">
+      <div class="game-card" onclick="startGame('truth')">
+        <div class="game-title">🎯 Truth Cards</div>
+        <div class="game-desc">Take turns answering deep questions about each other. Builds honesty and closeness.</div>
+      </div>
+      <div class="game-card" onclick="startGame('scenario')">
+        <div class="game-title">🌍 Scenario Roles</div>
+        <div class="game-desc">Navigate fun hypothetical situations together. Reveals how you think as a team.</div>
+      </div>
+      <div class="game-card" onclick="startGame('appreciation')">
+        <div class="game-title">💛 Appreciation Round</div>
+        <div class="game-desc">Share specific things you appreciate about each other. Simple but powerful.</div>
+      </div>
+      <div class="game-card" onclick="startGame('future')">
+        <div class="game-title">🔭 Future Vision</div>
+        <div class="game-desc">Discuss your dreams and where you see yourselves going. Aligns your paths.</div>
+      </div>
+    </div>
+    <div id="game-active-area" style="display:none">
+      <div class="game-active">
+        <div class="question-label" id="game-label">Game</div>
+        <div class="question-text" id="game-prompt"></div>
+      </div>
+      <button class="btn-rose" onclick="nextGamePrompt()">Next →</button>
+      <button class="btn-secondary" onclick="endGame()">End game</button>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-advisor">
+    <div style="margin-bottom:16px">
+      <div class="prompt-label" style="margin-bottom:10px">Share a situation as a couple</div>
+      <textarea class="situation-input" id="couple-situation" placeholder="Describe something you're navigating together — a disagreement, a decision, a feeling you want help expressing..."></textarea>
+      <button class="btn-rose" id="couple-ask-btn" onclick="askCoupleAdvisor()">Ask Umoja</button>
+    </div>
+    <div class="response-card" id="couple-response">
+      <div class="response-label">Umoja's Guidance</div>
+      <div class="response-text" id="couple-response-text"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CLAUDE_API = "https://api.anthropic.com/v1/messages";
+
+let currentRoom = null;
+let currentName = null;
+let selectedAdvisorMode = 'reflective';
+let currentGame = null;
+let gameIndex = 0;
+
+const affirmations = [
+  "You are worthy of the love you give to others.",
+  "Your vulnerability is not weakness — it is the beginning of real connection.",
+  "You don't need to be complete to be loved. You just need to be honest.",
+  "The right person will not ask you to shrink yourself.",
+  "Healing is not linear. Be patient with where you are today.",
+  "Your presence is a gift. You don't need to earn your place in someone's life.",
+  "Confidence is not the absence of doubt — it is showing up anyway."
+];
+
+const prompts = [
+  "What is one thing you want someone to understand about you that you rarely say out loud?",
+  "Describe the version of yourself you are working toward. What does that person look like?",
+  "What boundary do you need to set for yourself this week — and why have you avoided it?",
+  "What does love look like in action, to you specifically?",
+  "What is a pattern you keep repeating in relationships that you want to break?",
+  "If you could have one honest conversation with your past self about love, what would you say?",
+  "What does a healthy relationship feel like in your body, not just your mind?"
+];
+
+const coupleQuestions = [
+  "What is one thing I do that makes you feel most loved, even if it seems small?",
+  "What is a dream you've been hesitant to share with me, and why?",
+  "How do you prefer to be supported when you're stressed or overwhelmed?",
+  "What is something from your childhood that still shapes how you love?",
+  "What does 'home' mean to you — and do you feel it with me?",
+  "Is there something you've wanted to say to me but haven't found the right moment?",
+  "What is one thing we could do more of that would make you feel closer to me?",
+  "What are you most proud of about how we handle disagreements?",
+  "Where do you see us in three years, and does that excite or scare you?"
+];
+
+const games = {
+  truth: [
+    "What is something about me that surprised you when you first found out?",
+    "When do you feel most distant from me, and what causes it?",
+    "What is a fear you have about our relationship that you haven't fully voiced?",
+    "What is something I said once that stayed with you — positive or negative?",
+    "Do you feel like I truly see you? What would help you feel more seen?"
+  ],
+  scenario: [
+    "We have 48 hours and unlimited money. Where do we go and what do we do?",
+    "One of us gets a dream job offer in another country. How do we handle it together?",
+    "We disagree on a major life decision. What's our process for reaching a conclusion?",
+    "Five years from now — describe a normal Tuesday in our life. What does it look like?",
+    "We hit a rough patch and things feel distant. What is the first move either of us makes?"
+  ],
+  appreciation: [
+    "Name one specific thing your partner did this week that you appreciated but didn't say.",
+    "What is a quality your partner has that you wish you had more of?",
+    "Describe a moment with your partner that you keep coming back to in your memory.",
+    "What is something your partner does for you that you would genuinely miss?",
+    "Tell your partner one way they have made you a better person."
+  ],
+  future: [
+    "What does financial stability look like for us — and are we aligned on how to get there?",
+    "How do you picture us handling major family decisions in the future?",
+    "What is one shared goal you want us to commit to in the next year?",
+    "What does your ideal home environment feel like, and does it match what I picture?",
+    "Is there something about our future you're excited about but haven't told me yet?"
+  ]
+};
+
+function getStorage(key) {
+  try { return JSON.parse(localStorage.getItem(key)); } catch { return null; }
+}
+
+function setStorage(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() { showScreen('landing'); }
+
+function goSingles() {
+  showScreen('singles');
+  loadSinglesContent();
+}
+
+function loadSinglesContent() {
+  const idx = new Date().getDate() % affirmations.length;
+  document.getElementById('daily-affirmation').textContent = affirmations[idx];
+  const pidx = (new Date().getDate() + 1) % prompts.length;
+  document.getElementById('daily-prompt').textContent = prompts[pidx];
+}
+
+function refreshPrompt() {
+  const all = prompts;
+  const current = document.getElementById('daily-prompt').textContent;
+  let next = all[Math.floor(Math.random() * all.length)];
+  while (next === current) next = all[Math.floor(Math.random() * all.length)];
+  document.getElementById('daily-prompt').textContent = next;
+}
+
+function selectMode(el) {
+  document.querySelectorAll('.mode-opt').forEach(m => m.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedAdvisorMode = el.dataset.mode;
+}
+
+async function callClaude(systemPrompt, userMessage) {
+  const res = await fetch(CLAUDE_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMessage }]
+    })
+  });
+  const data = await res.json();
+  if (data.content && data.content[0]) return data.content[0].text;
+  throw new Error('No response');
+}
+
+async function askAdvisor() {
+  const situation = document.getElementById('situation-input').value.trim();
+  if (!situation) { showToast('Share what\'s on your mind first'); return; }
+
+  const btn = document.getElementById('singles-ask-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+
+  const modeInstructions = {
+    reflective: "Use Socratic questioning to help the user understand their own feelings. Ask one or two thoughtful follow-up questions. Be warm but don't project emotions onto them. Help them arrive at their own insights.",
+    strategy: "Give the user a clear, actionable communication script or strategy they can actually use. Be practical and specific. Format it as steps or a script if appropriate.",
+    game: "Suggest a specific self-reflection exercise or journaling activity that directly addresses their situation. Explain the exercise clearly and why it will help."
+  };
+
+  const system = `You are Umoja, a warm and emotionally intelligent relationship advisor. You help young people navigate love, confidence, and connection with empathy and wisdom. You never judge. You speak clearly and directly. You are not a therapist but you are a trusted friend with good insight.
+
+Mode: ${selectedAdvisorMode}
+Instruction: ${modeInstructions[selectedAdvisorMode]}
+
+Keep your response under 200 words. Be genuine, not generic.`;
+
+  try {
+    const response = await callClaude(system, situation);
+    document.getElementById('singles-response-text').textContent = response;
+    document.getElementById('singles-response').classList.add('visible');
+    document.getElementById('singles-response').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch {
+    showToast('Could not reach Umoja. Check your connection.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Ask Umoja';
+}
+
+function markEffective() {
+  showToast('✓ Noted. Glad that helped.');
+}
+
+function askAgain() {
+  document.getElementById('singles-response').classList.remove('visible');
+  document.getElementById('situation-input').focus();
+}
+
+function goCouples() { showScreen('couples'); }
+
+function generateCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('room-code-input').value = code;
+}
+
+function joinRoom() {
+  const name = document.getElementById('partner-name').value.trim();
+  const code = document.getElementById('room-code-input').value.trim().toUpperCase();
+
+  if (!name) { showToast('Enter your name first'); return; }
+  if (!code || code.length < 3) { showToast('Enter a valid room code'); return; }
+
+  currentName = name;
+  currentRoom = code;
+
+  // Save this partner to room data
+  const roomKey = `umoja_room_${code}`;
+  let roomData = getStorage(roomKey) || { partners: [], answers: [], created: Date.now() };
+  if (!roomData.partners.includes(name)) {
+    roomData.partners.push(name);
+    setStorage(roomKey, roomData);
+  }
+
+  loadRoom();
+  showScreen('room');
+}
+
+function loadRoom() {
+  document.getElementById('room-code-display').textContent = currentRoom;
+
+  const roomKey = `umoja_room_${currentRoom}`;
+  const roomData = getStorage(roomKey) || { partners: [], answers: [] };
+
+  // Partners row
+  const row = document.getElementById('partners-row');
+  row.innerHTML = roomData.partners.map(p =>
+    `<div class="partner-chip"><div class="partner-dot"></div>${p}</div>`
+  ).join('');
+
+  // Load question
+  const qKey = `umoja_q_${currentRoom}`;
+  const savedQ = getStorage(qKey);
+  if (savedQ) {
+    document.getElementById('couple-question').textContent = savedQ;
+  } else {
+    const q = coupleQuestions[Math.floor(Math.random() * coupleQuestions.length)];
+    setStorage(qKey, q);
+    document.getElementById('couple-question').textContent = q;
+  }
+
+  loadAnswers();
+}
+
+function newQuestion() {
+  const current = document.getElementById('couple-question').textContent;
+  let q = coupleQuestions[Math.floor(Math.random() * coupleQuestions.length)];
+  while (q === current) q = coupleQuestions[Math.floor(Math.random() * coupleQuestions.length)];
+  const qKey = `umoja_q_${currentRoom}`;
+  setStorage(qKey, q);
+  document.getElementById('couple-question').textContent = q;
+  // Clear answers for new question
+  const roomKey = `umoja_room_${currentRoom}`;
+  let roomData = getStorage(roomKey) || {};
+  roomData.answers = [];
+  setStorage(roomKey, roomData);
+  loadAnswers();
+}
+
+function saveAnswer() {
+  const text = document.getElementById('answer-input').value.trim();
+  if (!text) { showToast('Write your answer first'); return; }
+
+  const roomKey = `umoja_room_${currentRoom}`;
+  let roomData = getStorage(roomKey) || { partners: [], answers: [] };
+  roomData.answers = roomData.answers || [];
+  roomData.answers.push({ name: currentName, text, time: Date.now() });
+  setStorage(roomKey, roomData);
+
+  document.getElementById('answer-input').value = '';
+  loadAnswers();
+  showToast('Answer shared ✓');
+}
+
+function loadAnswers() {
+  const roomKey = `umoja_room_${currentRoom}`;
+  const roomData = getStorage(roomKey) || { answers: [] };
+  const list = document.getElementById('answers-list');
+
+  if (!roomData.answers || roomData.answers.length === 0) {
+    list.innerHTML = '<span style="color:var(--muted);font-size:0.85rem">No answers yet. Be the first to share.</span>';
+    return;
+  }
+
+  list.innerHTML = roomData.answers.map(a =>
+    `<div class="saved-answer">
+      <div class="answer-author">${a.name}</div>
+      <div class="answer-body">${a.text}</div>
+    </div>`
+  ).join('');
+}
+
+function copyRoomCode() {
+  navigator.clipboard.writeText(currentRoom).then(() => showToast('Room code copied: ' + currentRoom));
+}
+
+function leaveRoom() {
+  currentRoom = null;
+  currentName = null;
+  showScreen('couples');
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+
+  if (name === 'questions') loadAnswers();
+}
+
+function startGame(type) {
+  currentGame = type;
+  gameIndex = 0;
+  document.getElementById('games-list').style.display = 'none';
+  document.getElementById('game-active-area').style.display = 'block';
+  document.getElementById('game-label').textContent = {
+    truth: '🎯 Truth Cards',
+    scenario: '🌍 Scenario Roles',
+    appreciation: '💛 Appreciation Round',
+    future: '🔭 Future Vision'
+  }[type];
+  document.getElementById('game-prompt').textContent = games[type][0];
+}
+
+function nextGamePrompt() {
+  gameIndex = (gameIndex + 1) % games[currentGame].length;
+  document.getElementById('game-prompt').textContent = games[currentGame][gameIndex];
+}
+
+function endGame() {
+  currentGame = null;
+  document.getElementById('games-list').style.display = 'block';
+  document.getElementById('game-active-area').style.display = 'none';
+}
+
+async function askCoupleAdvisor() {
+  const situation = document.getElementById('couple-situation').value.trim();
+  if (!situation) { showToast('Describe your situation first'); return; }
+
+  const btn = document.getElementById('couple-ask-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+
+  const system = `You are Umoja, a compassionate relationship advisor speaking to a couple together. You help couples navigate challenges with empathy, fairness, and wisdom. You never take sides. You speak to both partners equally. You use Socratic questioning to help them understand each other better. You are warm but honest. Keep responses under 250 words. Never be preachy.`;
+
+  try {
+    const response = await callClaude(system, `We are a couple sharing this together. Here is our situation: ${situation}`);
+    document.getElementById('couple-response-text').textContent = response;
+    document.getElementById('couple-response').classList.add('visible');
+    document.getElementById('couple-response').scrollIntoView({ behavior: 'smooth' });
+  } catch {
+    showToast('Could not reach Umoja. Check your connection.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Ask Umoja';
+}
+
+// Init
+loadSinglesContent();
+</script>
+</body>
+</html>
